@@ -2,3 +2,5 @@ Dockerfile
 docker-compose.yaml
 node_modules
 .env
+.dockerignore
+.gitignore
