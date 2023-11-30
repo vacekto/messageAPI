@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  messages:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: i_messages
+    container_name: "c_messages"
+    ports:
+      - ${PORT_SERVER}:3000
+    volumes:
+      - ./src:/messages/src
+    environment:
+      REDIS_URI: "redis://redis:${PORT_REDIS}"
+      MONGO_URI: "mongodb://mongo:${PORT_MONGO}/messages"
+      NODE_ENV: "${NODE_ENV}"
