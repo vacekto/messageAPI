@@ -16,6 +16,7 @@ services:
       REDIS_URI: "redis://redis:${PORT_REDIS}"
       MONGO_URI: "mongodb://mongo:${PORT_MONGO}/messages"
       NODE_ENV: "${NODE_ENV}"
+      PORT_SERVER: ${PORT_SERVER}
   
   mongo:
     image: mongo
