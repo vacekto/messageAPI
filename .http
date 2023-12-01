@@ -1,1 +1,25 @@
-http://localhost:3000/test
+GET http://localhost:3000/healthCheck
+
+###
+
+POST http://localhost:3000/register
+content-type: application/json
+
+{
+    "username": "Tomas",
+    "email": "vacektom01@gmail.com",
+    "password": "password"
+    
+}   
+
+###
+
+POST http://localhost:3000/comment
+content-type: application/json
+
+{
+    "title": "title",
+    "text": "@gmail.com",
+    "password": "password"
+    
+}
