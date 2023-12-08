@@ -13,11 +13,13 @@ export interface IComment {
     title: string,
     text: string,
     authorUsername: string,
+    id: string
 }
 
 export interface IPost {
     title: string,
     text: string,
     authorUsername: string,
-    comments: IComment[]
+    comments: IComment[],
+    id: string
 }

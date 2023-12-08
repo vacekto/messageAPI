@@ -1,20 +1,13 @@
 import { TUtilMiddleware, IUser } from "../util/types"
-import User from '../mongo/models/User'
+import UserModel from '../mongo/models/User'
+import * as MongoAPI from '../mongo/API'
 
-export const register: TUtilMiddleware = async (req, res) => {
+export const createUser: TUtilMiddleware = async (req, res) => {
 
-    const user = req.body
+    const userData = req.body
 
-    const newUser = new User(user)
+    const user = await MongoAPI.createUser(userData)
 
-    const createdUser = await newUser.save()
-
-    const plainUser: IUser = {
-        username: createdUser.username,
-        email: createdUser.email,
-        password: ''
-    }
-
-    res.status(200).send(plainUser)
+    res.status(200).send(user)
 }
 

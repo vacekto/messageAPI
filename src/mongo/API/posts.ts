@@ -1,12 +1,10 @@
-import { TUtilMiddleware, IPost, IComment } from "../util/types"
-import PostModel from '../mongo/models/Post'
+import { TUtilMiddleware, IPost, IComment } from "../../util/types"
+import PostModel from '../../mongo/models/Post'
 import { Types } from 'mongoose';
-import * as MongoAPI from "../mongo/API";
 
-export const createPost: TUtilMiddleware = async (req, res) => {
+export const createPost = async (postData: Omit<IPost, 'id'> ) => {
 
-    const post = req.body
-    const postDoc = new PostModel(post)
+    const postDoc = new PostModel(postData)
     await postDoc.save()
 
     const plainPost: IPost = {
@@ -17,7 +15,7 @@ export const createPost: TUtilMiddleware = async (req, res) => {
         id: postDoc._id.toString()
     }
 
-    res.status(200).send(plainPost)
+    return plainPost
 }
 
 export const getPostById: TUtilMiddleware = async (req, res) => {

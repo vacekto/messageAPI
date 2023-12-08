@@ -1,26 +1,45 @@
+import { Types } from 'mongoose';
 import Comment from '../mongo/models/Comment'
-import { TUtilMiddleware, IComment } from "../util/types"
-import UserModel from '../mongo/models/User'
+import { TUtilMiddleware, IComment, IPost } from "../util/types"
 import PostModel from '../mongo/models/Post'
+import * as MongoAPI from '../mongo/API'
 
 export const createComment: TUtilMiddleware = async (req, res, next) => {
 
-    const { postID, title, text, authorUsername } = req.body
+    const commentData = req.body
+    const comment = await MongoAPI.createComment(commentData)
 
-    const plainComment = { title, text, authorUsername } as IComment
+    res.status(200).send(comment)
+}
 
-    const [postDoc, authorDoc] = await Promise.all([
-        UserModel.findOne({ username: authorUsername }),
-        PostModel.findById(postID),
-    ])
+export const fetchPosts: TUtilMiddleware = async (req, res, next) => {
 
-    if (!postDoc || !authorDoc) throw new Error('bad input')
+    const postId = req.params.comment_id
+    const postDoc = await PostModel.findById(postId).populate<
+        { comments: (IComment & { _id: Types.ObjectId; })[] }
+    >('comments')
 
-    const newComment = new Comment(plainComment)
+    if (!postDoc) {
+        res.status(404).send('Resource not found')
+        return
+    }
 
-    const commentDoc = await newComment.save()
+    const plainComments: IComment[] = postDoc.comments.map(comment => {
+        return {
+            title: comment.title,
+            text: comment.text,
+            authorUsername: comment.authorUsername,
+            id: comment._id.toString()
+        }
+    })
 
-    // add comment to post commensts, save
+    const plainPost: IPost = {
+        authorUsername: postDoc.authorUsername,
+        comments: plainComments,
+        text: postDoc.text,
+        title: postDoc.title,
+        id: postDoc._id.toString()
+    }
 
-    res.status(200).send(plainComment)
+    res.send(plainPost)
 }

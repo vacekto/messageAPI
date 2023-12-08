@@ -10,16 +10,40 @@ router.get('/healthCheck', (req, res) => {
     res.status(200).send()
 })
 
+router.get(
+    '/test',
+    catchAsyncErrors(controllers.test)
+)
 
 router.post(
     '/register',
-    catchAsyncErrors(controllers.register)
+    catchAsyncErrors(controllers.createUser)
 )
 
+
 router.post(
-    '/comment',
+    '/comments',
     catchAsyncErrors(controllers.createComment)
 )
 
+router.get(
+    '/comments/:comment_id',
+    catchAsyncErrors(controllers.fetchPosts)
+)
+
+router.post(
+    '/posts',
+    catchAsyncErrors(controllers.createPost)
+)
+
+router.get(
+    '/posts',
+    catchAsyncErrors(controllers.geAllPosts)
+)
+
+router.get(
+    '/posts/:post_id',
+    catchAsyncErrors(controllers.getPostById)
+)
 
 export default router

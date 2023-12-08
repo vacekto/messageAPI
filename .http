@@ -2,24 +2,55 @@ GET http://localhost:3000/healthCheck
 
 ###
 
+GET http://localhost:3000/test
+
+###
+
 POST http://localhost:3000/register
 content-type: application/json
 
 {
-    "username": "Tomas",
-    "email": "vacektom01@gmail.com",
+    "username": "vacektomas",
+    "email": "vacektomas@gmail.com",
     "password": "password"
     
 }   
 
 ###
 
-POST http://localhost:3000/comment
+POST http://localhost:3000/comments
+content-type: application/json
+
+{
+    "postId": "656f7e3c0dd47d841ea9aee9",
+    "title": "sfaef",
+    "text": "@gmail.com",
+    "authorUsername": "Tomas"    
+}
+
+###
+
+POST http://localhost:3000/posts
 content-type: application/json
 
 {
     "title": "title",
-    "text": "@gmail.com",
-    "password": "password"
-    
+    "text": "gmail.com",
+    "authorUsername": "cosikdosi"    
 }
+
+###
+
+GET http://localhost:3000/posts/6572c8ebca449e17769c75a4
+
+
+###
+
+GET http://localhost:3000/posts
+
+
+###
+
+GET http://localhost:3000/comments/6572c8ebca449e17769c75a4
+
+
