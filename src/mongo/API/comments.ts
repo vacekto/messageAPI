@@ -1,8 +1,9 @@
 import { Types } from 'mongoose';
 import Comment from '../../mongo/models/Comment'
-import { IComment, IPost } from "../../util/types"
+import { IComment } from "../../util/types"
 import PostModel from '../../mongo/models/Post'
 import ResourceNotFoundError from '../../util/errors/ResourceNotFound';
+import CommentModel from '../../mongo/models/Comment';
 
 type TCommentData = Omit<IComment, 'id'> & { postId: string }
 
@@ -52,13 +53,11 @@ export const getCommentsFromSpecificPost = async (postId: string) => {
         }
     })
 
-    const plainPost: IPost = {
-        authorUsername: postDoc.authorUsername,
-        comments: plainComments,
-        text: postDoc.text,
-        title: postDoc.title,
-        id: postDoc._id.toString()
-    }
+    return plainComments
+}
 
-    return plainPost
+
+export const deleteCommentById = async (id: string) => {
+    
+    await CommentModel.findByIdAndDelete(id)
 }

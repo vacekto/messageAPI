@@ -1,83 +1,40 @@
-import { TUtilMiddleware, IPost, IComment } from "../util/types"
-import PostModel from '../mongo/models/Post'
-import { Types } from 'mongoose';
+import { TUtilMiddleware } from "../util/types"
 import * as MongoAPI from "../mongo/API";
 
-export const createPost: TUtilMiddleware = async (req, res) => {
+export const newPost: TUtilMiddleware = async (req, res) => {
 
-    const post = req.body
-    const postDoc = new PostModel(post)
-    await postDoc.save()
+    const postData = req.body
+    const post = await MongoAPI.createPost(postData)
 
-    const plainPost: IPost = {
-        authorUsername: postDoc.authorUsername,
-        comments: postDoc.comments,
-        text: postDoc.text,
-        title: postDoc.title,
-        id: postDoc._id.toString()
-    }
-
-    res.status(200).send(plainPost)
+    res.status(201).send(post)
 }
 
-export const getPostById: TUtilMiddleware = async (req, res) => {
+export const getPost: TUtilMiddleware = async (req, res) => {
 
     const postId = req.params.post_id
-    const postDoc = await PostModel.findById(postId).populate<
-        { comments: (IComment & { _id: Types.ObjectId; })[] }
-    >('comments')
+    const post = await MongoAPI.getPostById(postId)
 
-    if (!postDoc) {
-        res.status(400).send('Invalid post id')
-        return
-    }
-
-    const plainComments: IComment[] = postDoc.comments.map(comment => {
-        return {
-            title: comment.title,
-            text: comment.text,
-            authorUsername: comment.authorUsername,
-            id: comment._id.toString()
-        }
-    })
-
-    const plainPost: IPost = {
-        authorUsername: postDoc.authorUsername,
-        comments: plainComments,
-        text: postDoc.text,
-        title: postDoc.title,
-        id: postDoc._id.toString()
-    }
-
-    res.send(plainPost)
+    res.status(200).send(post)
 }
 
-export const geAllPosts: TUtilMiddleware = async (req, res) => {
-    
-    const postDocs = await PostModel.find().populate<
-        { comments: (IComment & { _id: Types.ObjectId; })[] }
-    >('comments')
+export const getAllPosts: TUtilMiddleware = async (req, res) => {
 
+    const posts = await MongoAPI.geAllPosts()
 
+    res.status(200).send(posts)
+}
 
-    const plainPosts = postDocs.map(postDoc => {
-        const plainComments: IComment[] = postDoc.comments.map(comment => {
-            return {
-                id: comment._id.toString(),
-                title: comment.title,
-                text: comment.text,
-                authorUsername: comment.authorUsername
-            }
-        })
+export const deletePost: TUtilMiddleware = async (req, res) => {
 
-        return {
-            authorUsername: postDoc.authorUsername,
-            comments: plainComments,
-            text: postDoc.text,
-            title: postDoc.title,
-            id: postDoc._id.toString()
-        }
-    })
+    const postId = req.params.post_id
+    const post = await MongoAPI.getPostById(postId)
 
-    res.send(plainPosts)
+    const commentIds = post.comments.map(comment => comment.id)
+
+    await Promise.all([
+        ...commentIds.map(id => MongoAPI.deleteCommentById(id)),
+        MongoAPI.deletePostById(postId)
+    ])
+
+    res.status(204).send()
 }

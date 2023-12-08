@@ -6,7 +6,7 @@ interface IResource {
 
 export default class ResourceNotFoundError extends Error {
     constructor({ name, key, value }: IResource) {
-        const message = `Resource ${name} with ${key}: ''${value} not found.`
+        const message = `Resource ${name} with ${key}: '${value}' not found.`
         super(message)
     }
 }

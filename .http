@@ -14,7 +14,19 @@ content-type: application/json
     "email": "vacektomas@gmail.com",
     "password": "password"
     
-}   
+}
+
+### 
+
+POST http://localhost:3000/login
+content-type: application/json
+
+{
+    "username": "mujUcet",
+    "password": "mojeHeslo"
+    
+}
+
 
 ###
 
@@ -22,7 +34,7 @@ POST http://localhost:3000/comments
 content-type: application/json
 
 {
-    "postId": "656f7e3c0dd47d841ea9aee9",
+    "postId": "65731ff69d63afbd236c58f4",
     "title": "sfaef",
     "text": "@gmail.com",
     "authorUsername": "Tomas"    
@@ -34,14 +46,14 @@ POST http://localhost:3000/posts
 content-type: application/json
 
 {
-    "title": "title",
-    "text": "gmail.com",
-    "authorUsername": "cosikdosi"    
+    "title": "novy post",
+    "text": "novy text",
+    "authorUsername": "nekdo"    
 }
 
 ###
 
-GET http://localhost:3000/posts/6572c8ebca449e17769c75a4
+GET http://localhost:3000/posts/65731ff69d63afbd236c58f4
 
 
 ###
@@ -51,6 +63,16 @@ GET http://localhost:3000/posts
 
 ###
 
-GET http://localhost:3000/comments/6572c8ebca449e17769c75a4
+GET http://localhost:3000/comments/65731ff69d63afbd236c58f4
 
 
+###
+
+DELETE  http://localhost:3000/comments/657320059d63afbd236c5900
+
+###
+
+DELETE  http://localhost:3000/posts/65731ff69d63afbd236c58f4
+
+
+### 

@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import bcrypt from 'bcrypt'
 import { emailRegex } from '../../util/regex';
 import { IUser } from '../../util/types';
 const { Schema } = mongoose;
@@ -29,6 +30,13 @@ const userSchema = new Schema<IUser>({
         type: String,
         required: true
     },
+});
+
+userSchema.pre('save', async function () {
+    const saltRounds = 10;
+    const password = this.password.trim()
+    const passwordHash = await bcrypt.hash(password, saltRounds)
+    this.password = passwordHash
 });
 
 const UserModel = mongoose.model<IUser>("User", userSchema)

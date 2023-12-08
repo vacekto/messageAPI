@@ -1,6 +1,7 @@
-import { TUtilMiddleware, IPost, IComment } from "../../util/types"
+import { IPost, IComment } from "../../util/types"
 import PostModel from '../../mongo/models/Post'
 import { Types } from 'mongoose';
+import ResourceNotFoundError from "../../util/errors/ResourceNotFound";
 
 export const createPost = async (postData: Omit<IPost, 'id'> ) => {
 
@@ -18,17 +19,17 @@ export const createPost = async (postData: Omit<IPost, 'id'> ) => {
     return plainPost
 }
 
-export const getPostById: TUtilMiddleware = async (req, res) => {
+export const getPostById = async (postId: string) => {
 
-    const postId = req.params.post_id
     const postDoc = await PostModel.findById(postId).populate<
         { comments: (IComment & { _id: Types.ObjectId; })[] }
     >('comments')
 
-    if (!postDoc) {
-        res.status(400).send('Invalid post id')
-        return
-    }
+    if (!postDoc) throw new ResourceNotFoundError({
+        name: 'Post',
+        key: 'id',
+        value: postId
+    })
 
     const plainComments: IComment[] = postDoc.comments.map(comment => {
         return {
@@ -47,10 +48,10 @@ export const getPostById: TUtilMiddleware = async (req, res) => {
         id: postDoc._id.toString()
     }
 
-    res.send(plainPost)
+    return plainPost
 }
 
-export const geAllPosts: TUtilMiddleware = async (req, res) => {
+export const geAllPosts= async () => {
     
     const postDocs = await PostModel.find().populate<
         { comments: (IComment & { _id: Types.ObjectId; })[] }
@@ -58,7 +59,7 @@ export const geAllPosts: TUtilMiddleware = async (req, res) => {
 
 
 
-    const plainPosts = postDocs.map(postDoc => {
+    const plainPosts: IPost[] = postDocs.map(postDoc => {
         const plainComments: IComment[] = postDoc.comments.map(comment => {
             return {
                 id: comment._id.toString(),
@@ -77,5 +78,9 @@ export const geAllPosts: TUtilMiddleware = async (req, res) => {
         }
     })
 
-    res.send(plainPosts)
+    return plainPosts
+}
+
+export const deletePostById = async (id: string) => {
+    await PostModel.findByIdAndDelete(id)   
 }

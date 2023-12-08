@@ -25,9 +25,9 @@ services:
     ports:
       - ${PORT_MONGO}:27017
 
-  redis:
-    image: redis:6.2-alpine
-    container_name: "c_messages_redis"
-    restart: always
-    ports:
-      - ${PORT_REDIS}:6379
+  # redis:
+  #   image: redis:6.2-alpine
+  #   container_name: "c_messages_redis"
+  #   restart: always
+  #   ports:
+  #     - ${PORT_REDIS}:6379
