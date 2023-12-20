@@ -1,5 +1,9 @@
-import { TUtilMiddleware } from "../util/types"
+import { TJWTPayload, TUtilMiddleware } from "../util/types"
 import * as MongoAPI from "../mongo/API";
+import { getTokenPayload } from "../util/helperFunctions/JWTAuth";
+import NotAuthenticatedError from "../util/errorClasses/NotAuthenticatedError";
+import { JWTPayloadZodSchema } from "../util/zodSchemas";
+import NotAuthorizedError from "../util/errorClasses/NotAuthorizedError";
 
 export const newPost: TUtilMiddleware = async (req, res) => {
 
@@ -26,15 +30,22 @@ export const getAllPosts: TUtilMiddleware = async (req, res) => {
 
 export const deletePost: TUtilMiddleware = async (req, res) => {
 
+    const accessToken = req.header('Authorization')!.split(' ')[1]
+
+    const tokenPayload: TJWTPayload = getTokenPayload(accessToken)
+
     const postId = req.params.post_id
     const post = await MongoAPI.getPostById(postId)
 
-    const commentIds = post.comments.map(comment => comment.id)
+    if (post.authorUsername !== tokenPayload.username)
+        throw new NotAuthorizedError()
+
+    const commentIds = post.comments.map(comment => comment._id)
 
     await Promise.all([
         ...commentIds.map(id => MongoAPI.deleteCommentById(id)),
         MongoAPI.deletePostById(postId)
     ])
 
-    res.status(204).send()
+    res.status(204).send('Post deleted successfully')
 }

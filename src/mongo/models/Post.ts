@@ -2,7 +2,6 @@ import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
 import { IPost } from '../../util/types';
-// use uuid property to identify post entry, not database id
 
 const postSchema = new Schema<IPost>({
 
@@ -30,7 +29,7 @@ const postSchema = new Schema<IPost>({
             ref: 'Comment'
         }
     ]
-});
+}, { versionKey: false });
 
 const PostModel = mongoose.model<IPost>("Post", postSchema)
 

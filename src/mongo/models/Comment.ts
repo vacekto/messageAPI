@@ -16,13 +16,13 @@ const commentSchema = new Schema<IComment>({
         trim: true,
     },
 
-    authorUsername: {   
+    authorUsername: {
         type: String,
         required: true,
         trim: true
     },
 
-});
+}, { versionKey: false });
 
 const commentModel = mongoose.model<IComment>("Comment", commentSchema)
 

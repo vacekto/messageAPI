@@ -1,17 +1,24 @@
 GET http://localhost:3000/healthCheck
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZhY2VrdG9tYXMiLCJlbWFpbCI6InZhY2VrdG9tYXNAZ21haWwuY29tIiwiaWF0IjoxNzAyNDc4MDU1LCJleHAiOjE3MDI0Nzg5NTV9.crMJAAFQk7nksGphuJOU2zy6g4NJ_HRMVEFpuVMA2yQ
+Cookie:: refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZhY2VrdG9tYXMiLCJlbWFpbCI6InZhY2VrdG9tYXNAZ21haWwuY29tIiwiaWF0IjoxNzAyMzg3NDc2fQ.0wIyzBWp8yzL_jp15UOOSnfyNlV6EJlw-66wtDtC6HQ
+
+{
+    "username": "vacektomas",
+    "email": "vacektomas@gmail.com",
+    "password": "password"
+    
+}
 
 ###
 
-GET http://localhost:3000/test
-
-###
 
 POST http://localhost:3000/register
 content-type: application/json
 
 {
-    "username": "vacektomas",
-    "email": "vacektomas@gmail.com",
+    "username": "cosikdosi",
+    "email": "cosikdosi@gmail.com",
     "password": "password"
     
 }
@@ -22,57 +29,58 @@ POST http://localhost:3000/login
 content-type: application/json
 
 {
-    "username": "mujUcet",
-    "password": "mojeHeslo"
+    "username": "cosikdosi",
+    "password": "password"
     
 }
 
 
 ###
 
-POST http://localhost:3000/comments
+POST http://localhost:3000/API/comments
 content-type: application/json
 
 {
-    "postId": "65731ff69d63afbd236c58f4",
+    "postId": "65821abe201342fbefc8a09c",
     "title": "sfaef",
     "text": "@gmail.com",
-    "authorUsername": "Tomas"    
+    "authorUsername": "vacektomas"    
 }
 
 ###
 
-POST http://localhost:3000/posts
+POST http://localhost:3000/API/posts
 content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZhY2VrdG9tYXMiLCJlbWFpbCI6InZhY2VrdG9tYXNAZ21haWwuY29tIiwiaWF0IjoxNzAzMTExNzI0LCJleHAiOjE3MDMxMTI2MjR9.Z9j71W_qzf-miFcYGyRmmcE3mV3IF0uY4AowcBJjMMI
 
 {
     "title": "novy post",
     "text": "novy text",
-    "authorUsername": "nekdo"    
+    "authorUsername": "vacektomas"    
 }
 
 ###
 
-GET http://localhost:3000/posts/65731ff69d63afbd236c58f4
+GET http://localhost:3000/API/posts/657f46c9253c37341b36de54
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZhY2VrdG9tYXMiLCJlbWFpbCI6InZhY2VrdG9tYXNAZ21haWwuY29tIiwiaWF0IjoxNzAzMTExNjM0LCJleHAiOjE3MDMxMTI1MzR9.EsSzv04VfKiGXf011S9gTABrDAkDkheBXWn9e4CEm5c
+
+###
+
+GET http://localhost:3000/API/posts
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZhY2VrdG9tYXMiLCJlbWFpbCI6InZhY2VrdG9tYXNAZ21haWwuY29tIiwiaWF0IjoxNzAzMTExNjM0LCJleHAiOjE3MDMxMTI1MzR9.EsSzv04VfKiGXf011S9gTABrDAkDkheBXWn9e4CEm5c
+###
+
+GET http://localhost:3000/API/comments/656f7e3a0dd47d841ea9aee7
 
 
 ###
 
-GET http://localhost:3000/posts
-
-
-###
-
-GET http://localhost:3000/comments/65731ff69d63afbd236c58f4
-
+DELETE  http://localhost:3000/API/comments/657320059d63afbd236c5900
 
 ###
 
-DELETE  http://localhost:3000/comments/657320059d63afbd236c5900
-
-###
-
-DELETE  http://localhost:3000/posts/65731ff69d63afbd236c58f4
+DELETE  http://localhost:3000/API/posts/65836c6cdf7a1454e5108b6d
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNvc2lrZG9zaSIsImVtYWlsIjoiY29zaWtkb3NpQGdtYWlsLmNvbSIsImlhdCI6MTcwMzExMjE5MCwiZXhwIjoxNzAzMTEzMDkwfQ.xpntOBesx0BZRGHElMdeMFaUXL-SNoHkS7fx3HEd5cE
 
 
 ### 

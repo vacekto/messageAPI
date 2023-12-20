@@ -1,86 +1,46 @@
 import { IPost, IComment } from "../../util/types"
 import PostModel from '../../mongo/models/Post'
-import { Types } from 'mongoose';
-import ResourceNotFoundError from "../../util/errors/ResourceNotFound";
+import ResourceNotFoundError from "../../util/errorClasses/ResourceNotFound";
+import UserModel from "../models/User";
 
-export const createPost = async (postData: Omit<IPost, 'id'> ) => {
+export const createPost = async (postData: Omit<IPost, '_id'>) => {
 
-    const postDoc = new PostModel(postData)
-    await postDoc.save()
+    const user = await UserModel.findOne({ username: postData.authorUsername }).lean()
+    
+    if (!user) throw new ResourceNotFoundError({
+        resourceName: 'User',
+        propKey: 'username',
+        propValue: postData.authorUsername
+    })
 
-    const plainPost: IPost = {
-        authorUsername: postDoc.authorUsername,
-        comments: postDoc.comments,
-        text: postDoc.text,
-        title: postDoc.title,
-        id: postDoc._id.toString()
-    }
+    const post = new PostModel(postData)
+    await post.save()
 
-    return plainPost
+    return post
 }
 
 export const getPostById = async (postId: string) => {
 
-    const postDoc = await PostModel.findById(postId).populate<
-        { comments: (IComment & { _id: Types.ObjectId; })[] }
-    >('comments')
+    const post: IPost | null = await PostModel.findById(postId)
+        .lean().populate<{ comments: IComment[] }>('comments')
 
-    if (!postDoc) throw new ResourceNotFoundError({
-        name: 'Post',
-        key: 'id',
-        value: postId
+    if (!post) throw new ResourceNotFoundError({
+        resourceName: 'Post',
+        propKey: 'id',
+        propValue: postId
     })
 
-    const plainComments: IComment[] = postDoc.comments.map(comment => {
-        return {
-            title: comment.title,
-            text: comment.text,
-            authorUsername: comment.authorUsername,
-            id: comment._id.toString()
-        }
-    })
-
-    const plainPost: IPost = {
-        authorUsername: postDoc.authorUsername,
-        comments: plainComments,
-        text: postDoc.text,
-        title: postDoc.title,
-        id: postDoc._id.toString()
-    }
-
-    return plainPost
+    return post
 }
 
-export const geAllPosts= async () => {
-    
-    const postDocs = await PostModel.find().populate<
-        { comments: (IComment & { _id: Types.ObjectId; })[] }
-    >('comments')
+export const geAllPosts = async () => {
 
+    const posts: IPost[] = await PostModel.find()
+        .lean().populate<{ comments: IComment[] }>('comments')
 
-
-    const plainPosts: IPost[] = postDocs.map(postDoc => {
-        const plainComments: IComment[] = postDoc.comments.map(comment => {
-            return {
-                id: comment._id.toString(),
-                title: comment.title,
-                text: comment.text,
-                authorUsername: comment.authorUsername
-            }
-        })
-
-        return {
-            authorUsername: postDoc.authorUsername,
-            comments: plainComments,
-            text: postDoc.text,
-            title: postDoc.title,
-            id: postDoc._id.toString()
-        }
-    })
-
-    return plainPosts
+    return posts
 }
 
 export const deletePostById = async (id: string) => {
-    await PostModel.findByIdAndDelete(id)   
+    await PostModel.findByIdAndDelete(id)
 }

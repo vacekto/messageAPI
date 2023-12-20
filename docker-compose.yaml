@@ -11,23 +11,17 @@ services:
       - ${PORT_SERVER}:3000
     volumes:
       - ./src:/messages/src
+      - ./bin:/messages/bin
+      - ./frontend:/messages/frontend
       - ./package.json:/messages/package.json
     environment:
-      REDIS_URI: "redis://redis:${PORT_REDIS}"
-      MONGO_URI: "mongodb://mongo:${PORT_MONGO}/messages"
+      REDIS_URI: "redis://redis:6379"
+      MONGO_URI: "mongodb://mongo:27017/messages"
       NODE_ENV: "${NODE_ENV}"
-      PORT_SERVER: ${PORT_SERVER}
-  
+      AUTH_TOKEN_SECRET: ${AUTH_TOKEN_SECRET}
+
   mongo:
     image: mongo
     container_name: "c_messages_mongo"
     restart: always
-    ports:
-      - ${PORT_MONGO}:27017
-
-  # redis:
-  #   image: redis:6.2-alpine
-  #   container_name: "c_messages_redis"
-  #   restart: always
-  #   ports:
-  #     - ${PORT_REDIS}:6379
+    

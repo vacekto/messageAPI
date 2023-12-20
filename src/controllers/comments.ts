@@ -1,7 +1,7 @@
-import { Types } from 'mongoose';
-import { TUtilMiddleware, IComment, IPost } from "../util/types"
-import PostModel from '../mongo/models/Post'
+import { TJWTPayload, TUtilMiddleware } from "../util/types"
 import * as MongoAPI from '../mongo/API'
+import { getTokenPayload } from "../util/helperFunctions/JWTAuth"
+import NotAuthorizedError from "../util/errorClasses/NotAuthorizedError"
 
 export const addComment: TUtilMiddleware = async (req, res, next) => {
 
@@ -20,9 +20,19 @@ export const fetchComments: TUtilMiddleware = async (req, res, next) => {
 }
 
 export const deleteComment: TUtilMiddleware = async (req, res, next) => {
-    
+
+    const accessToken = req.header('Authorization')!.split(' ')[1]
+
+    const tokenPayload: TJWTPayload = getTokenPayload(accessToken)
+
     const id = req.params.comment_id
+    const comment = await MongoAPI.getCommentById(id)
+
+    if(comment.authorUsername !== tokenPayload.username){
+        throw new NotAuthorizedError()
+    }
+
     await MongoAPI.deleteCommentById(id)
 
-    res.status(204).send('Resource deleted successfully')
+    res.status(204).send('Comment deleted successfully')
 }

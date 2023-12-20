@@ -1,4 +1,4 @@
-import { TUtilMiddleware } from './types'
+import { TUtilMiddleware } from '../types'
 import { Request, Response, NextFunction } from 'express'
 
 // Express version 4 doesn't catch rejected promises in middleware by itself, this decoretor ensures that decorated middleware does.

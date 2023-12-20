@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt'
-import { emailRegex } from '../../util/regex';
+import { emailSchema } from '../../util/zodSchemas';
 import { IUser } from '../../util/types';
 const { Schema } = mongoose;
 
@@ -20,7 +20,7 @@ const userSchema = new Schema<IUser>({
         trim: true,
         validate: {
             validator: function (email: string) {
-                return emailRegex.test(email);
+                return emailSchema.safeParse(email).success
             },
             message: props => `${props.value} is not a valid email!`
         }
@@ -30,12 +30,11 @@ const userSchema = new Schema<IUser>({
         type: String,
         required: true
     },
-});
+}, { versionKey: false });
 
 userSchema.pre('save', async function () {
-    const saltRounds = 10;
     const password = this.password.trim()
-    const passwordHash = await bcrypt.hash(password, saltRounds)
+    const passwordHash = await bcrypt.hash(password, 10)
     this.password = passwordHash
 });
 

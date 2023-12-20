@@ -1,60 +1,27 @@
 import { Router } from 'express'
-import * as controllers from '../controllers'
-import { catchAsyncErrors } from '../util/decorators'
-
-
-// TODO: create folder structure
+import protectedRoutes from './protected'
+import publicRoutes from './public'
+import authenticate from '../middleware/authentication'
+import { getTokenPayload } from '../util/helperFunctions/JWTAuth'
+import { JWTPayloadZodSchema } from '../util/zodSchemas'
 
 const router = Router()
 
-router.get('/healthCheck', (req, res) => {
-    console.log('health check')
-    res.status(200).send()
-})
 
-router.post(
-    '/register',
-    catchAsyncErrors(controllers.createUser)
-)
+router.get('/healthCheck',
+    (req, res, next) => {
 
-router.post(
-    '/login',
-    catchAsyncErrors(controllers.logIn)
-)
+        const accessToken = req.header('Authorization')!.split(' ')[1]
+        const tokenPayload = getTokenPayload(accessToken)
+        console.log(tokenPayload)
+        JWTPayloadZodSchema.parse(tokenPayload)
 
-router.delete(
-    '/comments/:comment_id',
-    catchAsyncErrors(controllers.deleteComment)
-)
 
-router.post(
-    '/comments',
-    catchAsyncErrors(controllers.addComment)
-)
+        console.log('health check')
+        res.status(200).send('OK')
+    })
 
-router.get(
-    '/comments/:post_id',
-    catchAsyncErrors(controllers.fetchComments)
-)
-
-router.post(
-    '/posts',
-    catchAsyncErrors(controllers.newPost)
-)
-
-router.get(
-    '/posts',
-    catchAsyncErrors(controllers.getAllPosts)
-)
-
-router.get(
-    '/posts/:post_id',
-    catchAsyncErrors(controllers.getPost)
-)
-
-router.delete(
-    '/posts/:post_id',
-    catchAsyncErrors(controllers.deletePost)
-)
+router.use(publicRoutes)
+router.use(authenticate, protectedRoutes)
 
 export default router
